@@ -58,6 +58,8 @@ public class CaveGenerator
                     mapArray[i, j] = 1;
             }
 
+
+
         int GetSurroundedWalls(int mapX, int mapY)
         {
             int walls = 0;
