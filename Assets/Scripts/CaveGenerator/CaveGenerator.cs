@@ -5,20 +5,22 @@ public class CaveGenerator
 {
     GeneratorValues values;
 
-    public CaveGenerator(BlackWhiteMap map, GeneratorValues values)
+    public CaveGenerator(PixelMap map, SquareGrid squareGrid, GeneratorValues values)
     {;
         this.values = values;
         map.UpdateMap(values.Width, values.Height);
         GenerateMap(map);
+        squareGrid.UpdateSquareGrid(map.Map);
 
         UserInput.OnClick
             .Subscribe(x =>
             {
                 GenerateMap(map);
+                squareGrid.UpdateSquareGrid(map.Map);
             });
     }
 
-    private void GenerateMap(BlackWhiteMap m)
+    private void GenerateMap(PixelMap m)
     {
         var hash = Time.deltaTime.ToString().GetHashCode();
         var random = new System.Random(hash);
@@ -41,7 +43,7 @@ public class CaveGenerator
             SmoothMap(m);
     }
 
-    private void SmoothMap(BlackWhiteMap m)
+    private void SmoothMap(PixelMap m)
     {
         var width = values.Width;
         var height = values.Height;

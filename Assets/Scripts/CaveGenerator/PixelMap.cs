@@ -1,4 +1,4 @@
-public class BlackWhiteMap
+public class PixelMap
 {
     public int[,] Map { get; private set; }
 
