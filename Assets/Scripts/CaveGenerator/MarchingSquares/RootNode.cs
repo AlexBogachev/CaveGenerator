@@ -7,7 +7,7 @@ public class RootNode : INode
 
 
     private Vector3 position;
-    private int vertexPosition;
+    private int vertexPosition = -1;
 
     private bool isActive;
 
@@ -35,6 +35,9 @@ public class RootNode : INode
     public int GetVertexPosition()
         => vertexPosition;
 
+
+    public void SetActive(bool isActive)
+        => this.isActive = isActive;
     public bool IsActive()
         => isActive;
 

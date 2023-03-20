@@ -8,6 +8,12 @@ public class CaveGeneratorInstaller : MonoInstaller
     [SerializeField]
     private GeneratorValues values;
 
+    [SerializeField]
+    private CaveMesh caveMeshPrefab;
+
+    [SerializeField]
+    private WallsMesh wallsMeshPrefab;
+
     private int[,] map = new int[0, 0];
 
     private List<Type> singleTypes = new List<Type>()
@@ -17,7 +23,6 @@ public class CaveGeneratorInstaller : MonoInstaller
         typeof(SquareGrid),
         typeof(MeshGenerator)
     };
-    
 
     public override void InstallBindings()
     {
@@ -39,6 +44,16 @@ public class CaveGeneratorInstaller : MonoInstaller
 
         Container.Bind<GeneratorValues>()
             .FromComponentInNewPrefab(values)
+            .AsSingle()
+            .NonLazy();
+
+        Container.Bind<CaveMesh>()
+            .FromComponentInNewPrefab(caveMeshPrefab)
+            .AsSingle()
+            .NonLazy();
+
+        Container.Bind<WallsMesh>()
+            .FromComponentInNewPrefab(wallsMeshPrefab)
             .AsSingle()
             .NonLazy();
     }

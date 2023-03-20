@@ -8,6 +8,9 @@ public class PixelMap
         return Map;
     }
 
+    public void SetNewMap(int[,] newMap)
+        => Map = newMap;
+
     public (int w, int h) GetDimensions()
         => (Map.GetLength(0), Map.GetLength(1));
 

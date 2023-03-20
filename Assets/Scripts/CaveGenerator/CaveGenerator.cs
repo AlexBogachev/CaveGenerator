@@ -5,18 +5,23 @@ public class CaveGenerator
 {
     GeneratorValues values;
 
-    public CaveGenerator(PixelMap map, SquareGrid squareGrid, GeneratorValues values)
+    public CaveGenerator(PixelMap map, SquareGrid squareGrid, CaveMesh formMesh, WallsMesh wallsMesh,GeneratorValues values)
     {;
         this.values = values;
         map.UpdateMap(values.Width, values.Height);
         GenerateMap(map);
         squareGrid.UpdateSquareGrid(map.Map);
+        formMesh.UpdateMesh();
+        wallsMesh.UpdateMesh();
 
         UserInput.OnClick
             .Subscribe(x =>
             {
+                map.UpdateMap(values.Width, values.Height);
                 GenerateMap(map);
                 squareGrid.UpdateSquareGrid(map.Map);
+                formMesh.UpdateMesh();
+                wallsMesh.UpdateMesh();
             });
     }
 
@@ -41,6 +46,8 @@ public class CaveGenerator
 
         for (int k = 0; k < values.SmoothRate; k++)
             SmoothMap(m);
+
+        m.SetNewMap(GetMapWithBorder(mapArray));
     }
 
     private void SmoothMap(PixelMap m)
@@ -82,5 +89,29 @@ public class CaveGenerator
                 }
             return walls;
         }
+    }
+
+    private int[,] GetMapWithBorder(int[,] mapArray)
+    {
+        var width = mapArray.GetLength(0);
+        var height = mapArray.GetLength(1);
+
+        int borderSize = values.BorderSize;
+        if (borderSize > 0)
+        {
+            var borderMap = new int[mapArray.GetLength(0) + borderSize * 2, mapArray.GetLength(1) + borderSize * 2];
+            for (int i = 0; i < borderMap.GetLength(0); i++)
+                for (int j = 0; j < borderMap.GetLength(1); j++)
+                {
+                    if (i >= borderSize && j >= borderSize && i < width + borderSize && j < height + borderSize)
+                    {
+                        borderMap[i, j] = mapArray[i - borderSize, j - borderSize];
+                    }
+                    else
+                        borderMap[i, j] = 1;
+                }
+            return borderMap;
+        }
+        return mapArray;
     }
 }

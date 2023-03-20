@@ -1,14 +1,15 @@
 using UnityEngine;
 
-public class GeneratorValues : MonoBehaviour
+[CreateAssetMenu(fileName = "CaveSettings", menuName = "ScriptableObjects/CaveGenerator", order = 1)]
+public class CaveSettings : ScriptableObject
 {
     public int Width;
     public int Height;
 
-    [Range (0,100)]
+    [Range(0, 100)]
     public int FillPercent;
 
-    [Range (1,10)]
+    [Range(1, 10)]
     public int SmoothRate;
 
     [Range(0, 20)]
