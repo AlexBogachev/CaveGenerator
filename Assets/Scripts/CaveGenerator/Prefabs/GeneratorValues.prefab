@@ -50,3 +50,4 @@ MonoBehaviour:
   SmoothRate: 8
   BorderSize: 5
   WallHeight: 5
+  RegionTreshhold: 100

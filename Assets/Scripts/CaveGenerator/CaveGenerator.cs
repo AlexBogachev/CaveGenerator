@@ -5,11 +5,11 @@ public class CaveGenerator
 {
     GeneratorValues values;
 
-    public CaveGenerator(PixelMap map, SquareGrid squareGrid, CaveMesh formMesh, WallsMesh wallsMesh,GeneratorValues values)
+    public CaveGenerator(PixelMap map, CaveRegionsCorrector regions,SquareGrid squareGrid, CaveMesh formMesh, WallsMesh wallsMesh,GeneratorValues values)
     {;
         this.values = values;
         map.UpdateMap(values.Width, values.Height);
-        GenerateMap(map);
+        GenerateMap(map, regions);
         squareGrid.UpdateSquareGrid(map.Map);
         formMesh.UpdateMesh();
         wallsMesh.UpdateMesh();
@@ -18,14 +18,14 @@ public class CaveGenerator
             .Subscribe(x =>
             {
                 map.UpdateMap(values.Width, values.Height);
-                GenerateMap(map);
+                GenerateMap(map, regions);
                 squareGrid.UpdateSquareGrid(map.Map);
                 formMesh.UpdateMesh();
                 wallsMesh.UpdateMesh();
             });
     }
 
-    private void GenerateMap(PixelMap m)
+    private void GenerateMap(PixelMap m, CaveRegionsCorrector regions)
     {
         var hash = Time.deltaTime.ToString().GetHashCode();
         var random = new System.Random(hash);
@@ -46,6 +46,8 @@ public class CaveGenerator
 
         for (int k = 0; k < values.SmoothRate; k++)
             SmoothMap(m);
+
+        regions.ProcessMap(m);
 
         m.SetNewMap(GetMapWithBorder(mapArray));
     }
@@ -114,4 +116,10 @@ public class CaveGenerator
         }
         return mapArray;
     }
+}
+
+public class GeneratorUtils
+{
+    public static bool IsInMapRange(int width, int height, int x, int y)
+        => x >= 0 && y >= 0 && x < width && y < height;
 }
