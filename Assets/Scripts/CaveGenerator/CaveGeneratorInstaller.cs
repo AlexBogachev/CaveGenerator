@@ -22,7 +22,8 @@ public class CaveGeneratorInstaller : MonoInstaller
         typeof(PixelMap),
         typeof(SquareGrid),
         typeof(MeshGenerator),
-        typeof(CaveRegionsCorrector)
+        typeof(CaveRegionsThreshholdHandler),
+        typeof(RoomConnector)
     };
 
     public override void InstallBindings()

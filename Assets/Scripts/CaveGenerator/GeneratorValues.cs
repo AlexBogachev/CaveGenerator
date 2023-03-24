@@ -17,6 +17,6 @@ public class GeneratorValues : MonoBehaviour
     [Range(0, 10)]
     public float WallHeight;
 
-    [Range(0, 100)]
+    [Range(0, 500)]
     public int RegionTreshhold;
 }

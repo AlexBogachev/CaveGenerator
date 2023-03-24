@@ -5,7 +5,7 @@ public class CaveGenerator
 {
     GeneratorValues values;
 
-    public CaveGenerator(PixelMap map, CaveRegionsCorrector regions,SquareGrid squareGrid, CaveMesh formMesh, WallsMesh wallsMesh,GeneratorValues values)
+    public CaveGenerator(PixelMap map, CaveRegionsThreshholdHandler regions,SquareGrid squareGrid, CaveMesh formMesh, WallsMesh wallsMesh,GeneratorValues values)
     {;
         this.values = values;
         map.UpdateMap(values.Width, values.Height);
@@ -25,7 +25,7 @@ public class CaveGenerator
             });
     }
 
-    private void GenerateMap(PixelMap m, CaveRegionsCorrector regions)
+    private void GenerateMap(PixelMap m, CaveRegionsThreshholdHandler regions)
     {
         var hash = Time.deltaTime.ToString().GetHashCode();
         var random = new System.Random(hash);

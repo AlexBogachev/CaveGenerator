@@ -1,25 +1,26 @@
 using System.Collections.Generic;
-using UnityEngine;
 
-public class CaveRegionsCorrector
+public class CaveRegionsThreshholdHandler
 {
     private PixelMap map;
 
-    GeneratorValues values;
+    private RoomConnector roomConnector;
 
-    public CaveRegionsCorrector(PixelMap map, GeneratorValues values) 
+    private GeneratorValues values;
+
+    public CaveRegionsThreshholdHandler(RoomConnector roomConnector, GeneratorValues values) 
     { 
+        this.roomConnector = roomConnector;
         this.values = values;
     }
 
     public void ProcessMap(PixelMap map)
     {
         this.map = map;
+        roomConnector.Clear();
 
         var wallsRegions = GetRegions(1);
-        Debug.Log("WR = " + wallsRegions.Count);
         var emptyRegions = GetRegions(0);
-        Debug.Log("ER = " + emptyRegions.Count);
 
         var threshhold = values.RegionTreshhold;
 
@@ -32,8 +33,13 @@ public class CaveRegionsCorrector
             {
                 if (x.Count <= threshhold)
                     x.ForEach(y => map.Map[y.x, y.y] = inversedValue);
+                else
+                    if(inversedValue == 1)
+                        roomConnector.AddRoom(new Room(x, map.Map));
             });
         }
+
+        roomConnector.HandleRooms();
     }
 
     private List<List<(int x, int y)>> GetRegions(int regionType)
