@@ -117,9 +117,3 @@ public class CaveGenerator
         return mapArray;
     }
 }
-
-public class GeneratorUtils
-{
-    public static bool IsInMapRange(int width, int height, int x, int y)
-        => x >= 0 && y >= 0 && x < width && y < height;
-}

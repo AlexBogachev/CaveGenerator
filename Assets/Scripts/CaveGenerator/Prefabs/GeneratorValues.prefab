@@ -46,8 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Width: 128
   Height: 72
-  FillPercent: 50
+  FillPercent: 46
   SmoothRate: 5
   BorderSize: 5
   WallHeight: 5
   RegionTreshhold: 50
+  PassageRadius: 2

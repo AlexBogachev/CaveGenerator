@@ -19,4 +19,7 @@ public class GeneratorValues : MonoBehaviour
 
     [Range(0, 500)]
     public int RegionTreshhold;
+
+    [Range(0, 20)]
+    public int PassageRadius;
 }
