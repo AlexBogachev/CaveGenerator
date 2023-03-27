@@ -2,6 +2,7 @@ using Zenject;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UniRx;
 
 public class CaveGeneratorInstaller : MonoInstaller
 {
@@ -41,7 +42,7 @@ public class CaveGeneratorInstaller : MonoInstaller
             .NonLazy();
 
         foreach(Type type in singleTypes)
-            Container.Bind(type)
+            Container.BindInterfacesAndSelfTo(type)
                 .AsSingle()
                 .NonLazy();
 
@@ -68,6 +69,12 @@ public class CaveGeneratorInstaller : MonoInstaller
         Container.Bind<GroundMesh>()
             .FromComponentInNewPrefab(groundMeshPrefab)
             .AsSingle()
+            .NonLazy();
+
+        Container.Bind<Subject<Unit>>()
+            .WithId(ZenjectIDs.CAVE_CREATED)
+            .FromInstance(new Subject<Unit>())
+            .AsCached()
             .NonLazy();
     }
 }

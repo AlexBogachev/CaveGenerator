@@ -1,9 +1,12 @@
 using UniRx;
 using UnityEngine;
+using Zenject;
 
-public class CaveGenerator
+public class CaveGenerator: IInitializable
 {
-    GeneratorValues values;
+    private Subject<Unit> caveCreated;
+
+    private GeneratorValues values;
 
     public CaveGenerator(PixelMap map, 
                          CaveRegionsThreshholdHandler regions,
@@ -12,9 +15,12 @@ public class CaveGenerator
                          TopMesh formMesh, 
                          WallsMesh wallsMesh, 
                          GroundMesh groundMesh, 
-                         GeneratorValues values)
+                         GeneratorValues values,
+                         [Inject (Id = ZenjectIDs.CAVE_CREATED)] Subject<Unit> caveCreated)
     {;
         this.values = values;
+        this.caveCreated = caveCreated;
+
         map.UpdateMap(values.Width, values.Height);
         GenerateMap(map, regions, spawnPointSweeper);
         squareGrid.UpdateSquareGrid(map.Map);
@@ -31,7 +37,13 @@ public class CaveGenerator
                 formMesh.UpdateMesh();
                 wallsMesh.UpdateMesh();
                 groundMesh.UpdateMesh();
+                caveCreated.OnNext(Unit.Default);
             });
+    }
+
+    public void Initialize()
+    {
+        caveCreated.OnNext(Unit.Default);
     }
 
     private void GenerateMap(PixelMap m, CaveRegionsThreshholdHandler regions, SpawnPointSweeper sweeper)
@@ -60,6 +72,8 @@ public class CaveGenerator
         sweeper.Sweep(m);
 
         m.SetNewMap(GetMapWithBorder(mapArray));
+
+
     }
 
     private void SmoothMap(PixelMap m)

@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 360877053}
   - component: {fileID: 360877052}
   - component: {fileID: 360877054}
+  - component: {fileID: 360877055}
   m_Layer: 0
   m_Name: SceneContext
   m_TagString: Untagged
@@ -156,6 +157,7 @@ MonoBehaviour:
   _scriptableObjectInstallers: []
   _monoInstallers:
   - {fileID: 360877054}
+  - {fileID: 360877055}
   _installerPrefabs: []
   _autoRun: 1
   _parentNewObjectsUnderSceneContext: 0
@@ -192,6 +194,19 @@ MonoBehaviour:
   caveMeshPrefab: {fileID: -4941536069711994426, guid: 6e97f8724fe97e441a160a145e65ea59, type: 3}
   wallsMeshPrefab: {fileID: -9016565027449090747, guid: 5dde89684c050d94ebbfcf2c95e55a27, type: 3}
   groundMeshPrefab: {fileID: -4212118254688403241, guid: b07a3132edc9ecc4cb4b2607248b0b96, type: 3}
+--- !u!114 &360877055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360877051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f7a113033663e428d6d73c5770024d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vehiclePrefab: {fileID: -8776269627349061707, guid: dc84a58afe1344547a230a5cb3c072c8, type: 3}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
