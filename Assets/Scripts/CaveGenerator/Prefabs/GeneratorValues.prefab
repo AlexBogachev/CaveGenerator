@@ -48,6 +48,7 @@ MonoBehaviour:
   Height: 72
   FillPercent: 46
   SmoothRate: 5
+  SquareSize: 1
   BorderSize: 5
   WallHeight: 5
   RegionTreshhold: 50

@@ -5,7 +5,12 @@ public class SquareGrid
 {
     public NodesSquare[,] Squares;
 
-    private float squareSize = 1.0f;
+    private float squareSize;
+
+    public SquareGrid(GeneratorValues values) 
+    {
+        squareSize = values.SquareSize;
+    }
 
     public void UpdateSquareGrid(int[,] pixels)
     {

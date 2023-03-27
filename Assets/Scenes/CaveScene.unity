@@ -189,9 +189,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   values: {fileID: 8735685899217489294, guid: 962889e3b22c42645b2408525c6cf62d, type: 3}
-  settings: {fileID: 0}
   caveMeshPrefab: {fileID: -4941536069711994426, guid: 6e97f8724fe97e441a160a145e65ea59, type: 3}
   wallsMeshPrefab: {fileID: -9016565027449090747, guid: 5dde89684c050d94ebbfcf2c95e55a27, type: 3}
+  groundMeshPrefab: {fileID: -4212118254688403241, guid: b07a3132edc9ecc4cb4b2607248b0b96, type: 3}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

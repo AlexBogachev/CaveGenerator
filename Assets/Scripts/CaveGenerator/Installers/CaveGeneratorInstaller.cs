@@ -9,10 +9,13 @@ public class CaveGeneratorInstaller : MonoInstaller
     private GeneratorValues values;
 
     [SerializeField]
-    private CaveMesh caveMeshPrefab;
+    private TopMesh caveMeshPrefab;
 
     [SerializeField]
     private WallsMesh wallsMeshPrefab;
+
+    [SerializeField]
+    private GroundMesh groundMeshPrefab;
 
     private int[,] map = new int[0, 0];
 
@@ -24,7 +27,8 @@ public class CaveGeneratorInstaller : MonoInstaller
         typeof(MeshGenerator),
         typeof(CaveRegionsThreshholdHandler),
         typeof(RoomConnector),
-        typeof(PassageBuilder)
+        typeof(PassageBuilder),
+        typeof(MaxSquareOnPlaneGetter)
     };
 
     public override void InstallBindings()
@@ -50,13 +54,18 @@ public class CaveGeneratorInstaller : MonoInstaller
             .AsSingle()
             .NonLazy();
 
-        Container.Bind<CaveMesh>()
+        Container.Bind<TopMesh>()
             .FromComponentInNewPrefab(caveMeshPrefab)
             .AsSingle()
             .NonLazy();
 
         Container.Bind<WallsMesh>()
             .FromComponentInNewPrefab(wallsMeshPrefab)
+            .AsSingle()
+            .NonLazy();
+
+        Container.Bind<GroundMesh>()
+            .FromComponentInNewPrefab(groundMeshPrefab)
             .AsSingle()
             .NonLazy();
     }

@@ -11,6 +11,9 @@ public class GeneratorValues : MonoBehaviour
     [Range (1,10)]
     public int SmoothRate;
 
+    [Range(0.1f, 10)]
+    public float SquareSize;
+
     [Range(0, 20)]
     public int BorderSize;
 

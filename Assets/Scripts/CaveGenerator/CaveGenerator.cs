@@ -5,7 +5,13 @@ public class CaveGenerator
 {
     GeneratorValues values;
 
-    public CaveGenerator(PixelMap map, CaveRegionsThreshholdHandler regions,SquareGrid squareGrid, CaveMesh formMesh, WallsMesh wallsMesh,GeneratorValues values)
+    public CaveGenerator(PixelMap map, 
+                         CaveRegionsThreshholdHandler regions,
+                         SquareGrid squareGrid, 
+                         TopMesh formMesh, 
+                         WallsMesh wallsMesh, 
+                         GroundMesh groundMesh, 
+                         GeneratorValues values)
     {;
         this.values = values;
         map.UpdateMap(values.Width, values.Height);
@@ -13,6 +19,7 @@ public class CaveGenerator
         squareGrid.UpdateSquareGrid(map.Map);
         formMesh.UpdateMesh();
         wallsMesh.UpdateMesh();
+        groundMesh.UpdateMesh();
 
         UserInput.OnClick
             .Subscribe(x =>
@@ -22,6 +29,7 @@ public class CaveGenerator
                 squareGrid.UpdateSquareGrid(map.Map);
                 formMesh.UpdateMesh();
                 wallsMesh.UpdateMesh();
+                groundMesh.UpdateMesh();
             });
     }
 

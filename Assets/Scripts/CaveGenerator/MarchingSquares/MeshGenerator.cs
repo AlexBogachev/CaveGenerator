@@ -6,6 +6,8 @@ public class MeshGenerator
 {
     private GeneratorValues values;
 
+    MaxSquareOnPlaneGetter maxGroundSquare;
+
     private List<Vector3> vertices = new List<Vector3>();
     private List<NodesTriangle> triangles = new List<NodesTriangle>();
 
@@ -14,12 +16,13 @@ public class MeshGenerator
     private List<List<int>> allOutlines = new List<List<int>>();
     private HashSet<int> checkedVertices = new HashSet<int>();
 
-    public MeshGenerator(GeneratorValues values)
+    public MeshGenerator(GeneratorValues values, MaxSquareOnPlaneGetter maxGroundSquare)
     {
         this.values = values;
+        this.maxGroundSquare = maxGroundSquare;
     }
 
-    public (Vector3[] vert, int[]tr) GetMeshData(SquareGrid grid) 
+    public (Vector3[] vert, int[]tr) GetTopMeshData(SquareGrid grid) 
     {
         ClearData();
 
@@ -27,6 +30,7 @@ public class MeshGenerator
             TriangulateSquare(square);
 
         var intTriangles = triangles.SelectMany(x => x.nodes).ToArray();
+
         return (vertices.ToArray(), intTriangles);
     }
 
@@ -59,6 +63,57 @@ public class MeshGenerator
             }
 
         return (wallVertices.ToArray(), wallTrinagles.ToArray());
+    }
+
+    public (Vector3[] vert, int[] tr) GetGroundMesh()
+    {
+        List<Vector3> wallVertices = new List<Vector3>();
+        List<int> wallTrinagles = new List<int>();
+
+        var planeSquareSize = maxGroundSquare.GetMaxSquare();
+
+        var halfWidth = (values.Width + values.BorderSize * 2) / 2;
+        var halfHeight = (values.Height + values.BorderSize * 2 ) / 2;
+
+        var widthCount = halfWidth * 2 / planeSquareSize;
+        var heightCount = halfHeight * 2 / planeSquareSize;
+
+        var zPosition = - values.WallHeight;
+
+        for(int i = 0; i < heightCount;i++)
+            for(int j = 0; j < widthCount; j++)
+            {
+                var posX = -halfWidth + j * planeSquareSize + planeSquareSize/2.0f;
+                var posY = -halfHeight + i * planeSquareSize + planeSquareSize / 2.0f;
+
+                wallVertices.Add(new Vector3(posX, zPosition, posY));
+            }
+
+        TriangulatePlate();
+
+        return (wallVertices.ToArray(), wallTrinagles.ToArray());
+
+        void TriangulatePlate()
+        {
+            for (int i = 0; i < widthCount-1; i++)
+                for (int j = 0; j < heightCount-1; j++)
+                {
+                    var width = (int)widthCount;
+
+                    var index0 = i + j * width;
+                    var index1 = (i + 1) + j * width;
+                    var index2 = (i + 1) + (j +1) * width;
+                    var index3 = i + (j + 1) * width;
+
+                    wallTrinagles.Add(index0);
+                    wallTrinagles.Add(index3);
+                    wallTrinagles.Add(index2);
+
+                    wallTrinagles.Add(index0);
+                    wallTrinagles.Add(index2);
+                    wallTrinagles.Add(index1);
+                }
+        }
     }
 
     private void CalculateWallOutlines()
