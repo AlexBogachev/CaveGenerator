@@ -1,21 +1,18 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using System.Collections.Generic;
+using Zenject;
 
 namespace Assets.Scripts.Player
 {
-    public class PlayerInstaller
+    public class PlayerInstaller: MonoInstaller
     {
-
-        // Use this for initialization
-        void Start()
+        public override void InstallBindings()
         {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            Container.Bind<List<(int, int)>>()
+                .WithId(ZenjectIDs.SPAWN_POINTS)
+                .FromInstance(new List<(int, int)>())
+                .AsSingle()
+                .NonLazy();
+                
         }
     }
 }

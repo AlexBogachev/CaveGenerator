@@ -7,6 +7,7 @@ public class CaveGenerator
 
     public CaveGenerator(PixelMap map, 
                          CaveRegionsThreshholdHandler regions,
+                         SpawnPointSweeper spawnPointSweeper,
                          SquareGrid squareGrid, 
                          TopMesh formMesh, 
                          WallsMesh wallsMesh, 
@@ -15,7 +16,7 @@ public class CaveGenerator
     {;
         this.values = values;
         map.UpdateMap(values.Width, values.Height);
-        GenerateMap(map, regions);
+        GenerateMap(map, regions, spawnPointSweeper);
         squareGrid.UpdateSquareGrid(map.Map);
         formMesh.UpdateMesh();
         wallsMesh.UpdateMesh();
@@ -25,7 +26,7 @@ public class CaveGenerator
             .Subscribe(x =>
             {
                 map.UpdateMap(values.Width, values.Height);
-                GenerateMap(map, regions);
+                GenerateMap(map, regions, spawnPointSweeper);
                 squareGrid.UpdateSquareGrid(map.Map);
                 formMesh.UpdateMesh();
                 wallsMesh.UpdateMesh();
@@ -33,7 +34,7 @@ public class CaveGenerator
             });
     }
 
-    private void GenerateMap(PixelMap m, CaveRegionsThreshholdHandler regions)
+    private void GenerateMap(PixelMap m, CaveRegionsThreshholdHandler regions, SpawnPointSweeper sweeper)
     {
         var hash = Time.deltaTime.ToString().GetHashCode();
         var random = new System.Random(hash);
@@ -56,6 +57,7 @@ public class CaveGenerator
             SmoothMap(m);
 
         regions.ProcessMap(m);
+        sweeper.Sweep(m);
 
         m.SetNewMap(GetMapWithBorder(mapArray));
     }

@@ -28,7 +28,8 @@ public class CaveGeneratorInstaller : MonoInstaller
         typeof(CaveRegionsThreshholdHandler),
         typeof(RoomConnector),
         typeof(PassageBuilder),
-        typeof(MaxSquareOnPlaneGetter)
+        typeof(MaxSquareOnPlaneGetter),
+        typeof(SpawnPointSweeper)
     };
 
     public override void InstallBindings()
