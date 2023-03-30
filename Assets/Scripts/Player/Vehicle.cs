@@ -16,7 +16,6 @@ namespace Assets.Scripts.Player
             rigidBody = GetComponent<Rigidbody>();
 
             var spawnPosition = spawnPoint + new Vector3(0.0f, boxCollider.size.y, 0.0f);
-            Debug.Log("POS= " + spawnPosition);
             transform.position = spawnPosition;
         }
 

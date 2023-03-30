@@ -40,7 +40,6 @@ public class SpawnPointSweeper
                         {
                             if(i == 0 && j == 0)
                             {
-                                Debug.Log("SWEEPER = " + center.x + " || " + center.y);
                                 var pos = GeneratorUtils.MapPositionToWorldPosition((x, y), width, height, values.SquareSize, -values.WallHeight);
                                 spawnPointsInWorldCoors.Add(pos);
                             }

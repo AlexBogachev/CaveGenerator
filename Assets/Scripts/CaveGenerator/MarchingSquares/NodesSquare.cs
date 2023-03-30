@@ -1,3 +1,6 @@
+
+using UnityEngine;
+
 public class NodesSquare
 {
     public RootNode TopLeft;
@@ -32,5 +35,13 @@ public class NodesSquare
             configuration += 2;
         if(bottomLeft.IsActive())
             configuration += 1; 
+    }
+
+    public Vector3 GetCenter() 
+    {
+        var x = (TopRight.GetPosition().x + BottomLeft.GetPosition().x) / 2.0f;
+        var y = (TopRight.GetPosition().y + BottomLeft.GetPosition().y) / 2.0f;
+        var z = (TopRight.GetPosition().z + BottomLeft.GetPosition().z) / 2.0f;
+        return new Vector3(x, y, z);
     }
 }

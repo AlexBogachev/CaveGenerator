@@ -16,7 +16,6 @@ namespace Assets.Scripts.Player
             caveCreated
                     .Subscribe(_ =>
                     {
-                        Debug.Log("SPAWN P = " + spawnPoints[0]);
                         factory.Create(spawnPoints[0]);
                     });
         }

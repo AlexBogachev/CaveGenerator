@@ -28,7 +28,7 @@ public class CaveGenerator: IInitializable
         wallsMesh.UpdateMesh();
         groundMesh.UpdateMesh();
 
-        UserInput.OnClick
+        Observable.EveryUpdate().Where(_ => Input.GetKeyDown(KeyCode.R))
             .Subscribe(x =>
             {
                 map.UpdateMap(values.Width, values.Height);
