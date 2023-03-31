@@ -8,6 +8,8 @@ public static class ZenjectIDs
     //Pathfinding
     public const string PATH_TILE_CHECKED = "PATH_TILE_CHECKED";
     public const string PATH_TILE_UPDATED = "PATH_TILE_UPDATED";
+    public const string PATH_CHECKED_TILES = "PATH_CHECKED_TILES";
+
 
 
 }

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 using Zenject;
@@ -12,13 +14,23 @@ namespace Assets.Scripts.Pathfinding
         [SerializeField]
         private Transform pathTilesParent;
 
+        private List<Type> simpleTypes = new List<Type>()
+        {
+            typeof(WalkableTilesGrid),
+            typeof(PathTileCheckController),
+            typeof(PathfindingAlgorithm)
+        };
+
         public override void InstallBindings()
         {
-            Container.Bind<WalkableTilesGrid>()
-                .AsSingle()
-                .NonLazy();
+            foreach (Type type in simpleTypes)
+                Container.Bind(type)
+                    .AsSingle()
+                    .NonLazy();
 
-            Container.Bind<PathTileCheckController>()
+            Container.Bind<ReactiveCollection<PathTile>>()
+                .WithId(ZenjectIDs.PATH_CHECKED_TILES)
+                .FromInstance(new ReactiveCollection<PathTile>())
                 .AsSingle()
                 .NonLazy();
 
