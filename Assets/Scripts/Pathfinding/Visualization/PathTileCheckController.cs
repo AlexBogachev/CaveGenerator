@@ -1,4 +1,3 @@
-using Assets.Scripts.Pathfinding;
 using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,24 +59,5 @@ namespace Assets.Scripts.Pathfinding
 
         public PathTile GetPathTileByGridCoords(Vector2Int coords)
             => tilesPositionsInGrid[coords];
-    }
-}
-
-public class PathfindingAlgorithm
-{
-    public PathfindingAlgorithm([Inject(Id = ZenjectIDs.PATH_CHECKED_TILES)] ReactiveCollection<PathTile> checkedTiles)
-    {
-        checkedTiles.ObserveCountChanged()
-            .Subscribe(x =>
-            {
-                if (x == 2)
-                {
-                    Debug.Log("RENDER PATH");
-                }
-                else
-                {
-                    Debug.Log("PATH NO RENDER");
-                }
-            });
     }
 }

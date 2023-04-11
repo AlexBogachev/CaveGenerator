@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
 using UniRx;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using Zenject;
 
 namespace Assets.Scripts.Pathfinding
@@ -12,6 +10,18 @@ namespace Assets.Scripts.Pathfinding
         public static float TILE_LENGTH;
         public static float TILE_DIAGONAL;
 
+        public int GCost { get; private set; }
+        public int HCost { get; private set; }
+        public int FCost
+        {
+            get
+            {
+                return GCost + HCost;
+            }
+        }
+
+        public PathTile Parent { get; private set; }
+
         public TileInfo TileInfo { get; private set; }
         public Subject<Color> TileUpdated { get; private set; }
         public Subject<PathTile> TileChecked { get; private set; }
@@ -20,6 +30,8 @@ namespace Assets.Scripts.Pathfinding
 
         private bool isWalkable;
         private bool isChecked;
+
+
 
         public PathTile(TileInfo tileInfo, bool isWalkable,
                        GeneratorValues values,
@@ -69,6 +81,15 @@ namespace Assets.Scripts.Pathfinding
                     neighbour.TileUpdated.OnNext(Color.grey);
             }
         }
+
+        public void SetGCost(int gCost)
+            => GCost = gCost;
+
+        public void SetHCost(int hCost)
+            => HCost = hCost;
+
+        public void SetParent(PathTile parent)
+            => Parent = parent;
 
         public void SetWalkableStatus(bool isWalkable)
             =>this.isWalkable = isWalkable;

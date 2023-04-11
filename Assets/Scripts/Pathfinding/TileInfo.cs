@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace Assets.Scripts.Pathfinding
 {
-    public struct TileInfo
+    public class TileInfo
     {
-        public Vector3 Position;
-        public Vector2Int PositionInGrid;
-        public List<Vector2Int> Neighbours;
+        public Vector3 Position { get; private set; }
+        public Vector2Int PositionInGrid { get; private set; }
+        public List<Vector2Int> Neighbours { get; private set; }
 
         public TileInfo(Vector3 position, Vector2Int positionInGrid, List<Vector2Int> neighbours)
         {
