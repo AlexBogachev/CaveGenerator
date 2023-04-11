@@ -1,3 +1,4 @@
+using Assets.Scripts.Data;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
@@ -5,7 +6,7 @@ using Zenject;
 
 namespace Assets.Scripts.Pathfinding
 {
-    public class PathTile
+    public class PathTile : IHeapItem<PathTile>
     {
         public static float TILE_LENGTH;
         public static float TILE_DIAGONAL;
@@ -26,12 +27,13 @@ namespace Assets.Scripts.Pathfinding
         public Subject<Color> TileUpdated { get; private set; }
         public Subject<PathTile> TileChecked { get; private set; }
 
+        private int heapIndex;
+        public int HeapIndex { get => heapIndex; set => heapIndex = value; }
+
         private PathTile parent;
 
         private bool isWalkable;
         private bool isChecked;
-
-
 
         public PathTile(TileInfo tileInfo, bool isWalkable,
                        GeneratorValues values,
@@ -50,13 +52,11 @@ namespace Assets.Scripts.Pathfinding
                 {
                     if (isChecked)
                     {
-                        Debug.Log("COLOR WHITE");
                         tileUpdated.OnNext(Color.white);
                     }
                         
                     else
                     {
-                        Debug.Log("COLOR RED");
                         tileUpdated.OnNext(Color.red);
                     }
 
@@ -96,6 +96,14 @@ namespace Assets.Scripts.Pathfinding
 
         public bool IsTileChecked()
             => isChecked;
+
+        public int CompareTo(PathTile other)
+        {
+            int compare = FCost.CompareTo(other.FCost);
+            if(compare == 0)
+                compare = HCost.CompareTo(other.HCost);
+            return -compare;
+        }
 
         public class Factory:PlaceholderFactory<TileInfo, bool, PathTile> { }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Data;
+using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
@@ -10,6 +11,8 @@ namespace Assets.Scripts.Pathfinding
     {
         private WalkableTilesGrid tileGrid;
 
+        private List<PathTile> pathTiles = new List<PathTile>();
+
         public PathfindingAlgorithm(WalkableTilesGrid tileGrid,
                                     [Inject(Id = ZenjectIDs.PATH_CHECKED_TILES)] ReactiveCollection<PathTile> checkedTiles)
         {
@@ -18,17 +21,21 @@ namespace Assets.Scripts.Pathfinding
             checkedTiles.ObserveCountChanged()
                 .Subscribe(x =>
                 {
+                    pathTiles.ForEach(x => x.TileUpdated.OnNext(Color.white));
+                    pathTiles.Clear();
+
                     if (x == 2)
                     {
-                        Debug.Log("PATH RENDER");
+                        UnityEngine.Debug.Log("PATH RENDER");
                         foreach (var tile in GetPath(checkedTiles.ToList()))
                         {
                             tile.TileUpdated.OnNext(Color.blue);
+                            pathTiles.Add(tile);
                         }
                     }
                     else
                     {
-                        Debug.Log("PATH NO RENDER");
+                        UnityEngine.Debug.Log("PATH NO RENDER");
                     }
                 });
         }
@@ -38,31 +45,18 @@ namespace Assets.Scripts.Pathfinding
             var startTile = checkedTiles[0];
             var endTile = checkedTiles[1];
 
-            var openSet = new List<PathTile>();
+            var openSet = new Heap<PathTile>(tileGrid.Tiles.Count);
             var closedSet = new HashSet<PathTile>();
 
             openSet.Add(startTile);
-            int n = 0;
+
             while (openSet.Count > 0)
-            {
-                if (n > 10000)
-                {
-                    Debug.Log("OVERFLOW");
-                    return new List<PathTile>();
-                }
-                    
-                PathTile currentTile = openSet[0];
-                for (int i = 1; i < openSet.Count; i++)
-                    if (openSet[i].FCost < currentTile.FCost || (openSet[i].FCost == currentTile.FCost && openSet[i].HCost < currentTile.HCost))
-                    {
-                        currentTile = openSet[i];
-                    }
-                openSet.Remove(currentTile);
+            {  
+                PathTile currentTile = openSet.PopFirst();
                 closedSet.Add(currentTile);
 
                 if(currentTile == endTile)
                 {
-                    //Debug.Log("CUR = " + currentTile.TileInfo.Position + " || END = " + currentTile.TileInfo.Position);
                     return RetrivePath(startTile, endTile);
                 }
 
@@ -81,8 +75,6 @@ namespace Assets.Scripts.Pathfinding
 
                         if(!openSet.Contains(neighbourTile))
                             openSet.Add(neighbourTile);
-
-                        //Debug.Log("PARENT = " + currentTile.TileInfo.Position);
                     }
                 }
             }
