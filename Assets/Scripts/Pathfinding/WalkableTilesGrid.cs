@@ -21,7 +21,7 @@ namespace Assets.Scripts.Pathfinding
         [Inject]
         private IFactory<TileInfo, bool, PathTile> tilesFactory;
 
-        public WalkableTilesGrid(SquareGrid squareGrid, PathTileCheckController pathTileCheckController) 
+        public WalkableTilesGrid(SquareGrid squareGrid) 
         {
             Tiles = new List<PathTile>();
             tilesPositionsInGrid = new Dictionary<Vector2Int, PathTile>();
@@ -29,11 +29,11 @@ namespace Assets.Scripts.Pathfinding
             Observable.EveryUpdate().Where(_ => Input.GetKeyDown(KeyCode.Space))
                 .Subscribe(_ =>
                 {
-                    ShowTiles(squareGrid, pathTileCheckController);
+                    CreateTiles(squareGrid);
                 });
         }
 
-        private void ShowTiles(SquareGrid squareGrid, PathTileCheckController pathTileCheckController)
+        private void CreateTiles(SquareGrid squareGrid)
         {
             tilesPositionsInGrid.Clear();
 
@@ -61,7 +61,7 @@ namespace Assets.Scripts.Pathfinding
                             }
                         var info = new TileInfo(position, positionInGrid, neighbours);
                         var tile = tilesFactory.Create(info, true);
-                        pathTileCheckController.AddTile(tile);
+                        //pathTileCheckController.AddTile(tile);
                         tilesPositionsInGrid.Add(tile.TileInfo.PositionInGrid, tile);
                         Tiles.Add(tile);
                     }
@@ -70,5 +70,8 @@ namespace Assets.Scripts.Pathfinding
 
         public PathTile GetPathTileByGridCoords(Vector2Int coords)
             => tilesPositionsInGrid[coords];
+
+        public PathTile GetPathTileByCoord(Vector3 position)
+            =>Tiles.OrderBy(x=>Vector3.Distance(x.TileInfo.Position, position)).First();
     }
 }

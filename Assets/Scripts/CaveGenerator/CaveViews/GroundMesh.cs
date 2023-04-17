@@ -1,30 +1,42 @@
-﻿using UnityEngine;
+﻿using UniRx;
+using UnityEngine;
+using UnityEngine.EventSystems;
 using Zenject;
 
-public class GroundMesh : MonoBehaviour
+public class GroundMesh : MonoBehaviour, IPointerClickHandler
 {
-    Mesh mesh;
+    private Mesh mesh;
 
-    MeshFilter meshFilter;
+    private MeshFilter meshFilter;
 
-    MeshRenderer meshRenderer;
+    private MeshRenderer meshRenderer;
 
-    MeshGenerator meshGenerator;
+    private MeshGenerator meshGenerator;
 
-    MeshCollider meshCollider;
+    private MeshCollider meshCollider;
 
-    GeneratorValues values;
+    private GeneratorValues values;
+
+    private Subject<Vector3> groundTouched;
 
     [Inject]
-    public void Constructor(MeshGenerator meshGenerator, GeneratorValues values)
+    public void Constructor(MeshGenerator meshGenerator, GeneratorValues values,
+                            [Inject (Id = ZenjectIDs.GROUND_TOUCHED)] Subject<Vector3> groundTouched)
     {
         this.meshGenerator = meshGenerator;
         this.values = values;
+        this.groundTouched = groundTouched;
 
         mesh = new Mesh();
         meshFilter = GetComponent<MeshFilter>();
         meshRenderer = GetComponent<MeshRenderer>();
         meshCollider = GetComponent<MeshCollider>();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        var touch = eventData.pointerCurrentRaycast.worldPosition;
+        groundTouched.OnNext(touch);
     }
 
     public void UpdateMesh()

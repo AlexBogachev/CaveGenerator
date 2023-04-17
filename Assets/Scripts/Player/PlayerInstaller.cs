@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -26,7 +27,6 @@ namespace Assets.Scripts.Player
                 .FromNew()
                 .AsSingle()
                 .NonLazy();
-                
         }
 
         private void InstallVehicle(DiContainer subContainer, Vector3 position)
@@ -35,6 +35,16 @@ namespace Assets.Scripts.Player
                 .FromComponentInNewPrefab(vehiclePrefab)
                 .AsSingle()
                 .WithArguments(position)
+                .NonLazy();
+
+            subContainer.Bind<ReactiveProperty<VehicleStatus>>()
+                .WithId(ZenjectIDs.VEHICLE_STATUS)
+                .FromInstance(new ReactiveProperty<VehicleStatus>())
+                .AsSingle()
+                .NonLazy();
+
+            subContainer.Bind<PathHandler>()
+                .AsSingle()
                 .NonLazy();
         }
     }

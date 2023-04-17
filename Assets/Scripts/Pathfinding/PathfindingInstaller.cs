@@ -17,7 +17,7 @@ namespace Assets.Scripts.Pathfinding
         private List<Type> simpleTypes = new List<Type>()
         {
             typeof(WalkableTilesGrid),
-            typeof(PathTileCheckController),
+            //typeof(PathTileCheckController),
             typeof(PathfindingAlgorithm)
         };
 
@@ -46,10 +46,10 @@ namespace Assets.Scripts.Pathfinding
                  .WithArguments(info, isWalkable)
                  .NonLazy();
 
-            subContainer.Bind<PathTileView>()
-                .FromMethod(() => CreateView(subContainer, info.Position))
-                .AsCached()
-                .NonLazy();
+            //subContainer.Bind<PathTileView>()
+            //    .FromMethod(() => CreateView(subContainer, info.Position))
+            //    .AsCached()
+            //    .NonLazy();
 
             subContainer.Bind<Subject<PathTile>>()
                 .WithId(ZenjectIDs.PATH_TILE_CHECKED)

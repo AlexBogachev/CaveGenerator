@@ -76,5 +76,11 @@ public class CaveGeneratorInstaller : MonoInstaller
             .FromInstance(new Subject<Unit>())
             .AsCached()
             .NonLazy();
+
+        Container.Bind<Subject<Vector3>>()
+            .WithId(ZenjectIDs.GROUND_TOUCHED)
+            .FromInstance(new Subject<Vector3>())
+            .AsSingle()
+            .NonLazy();
     }
 }

@@ -1,9 +1,10 @@
 ﻿using Assets.Scripts.Data;
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-using Zenject;
 
 namespace Assets.Scripts.Pathfinding
 {
@@ -13,72 +14,57 @@ namespace Assets.Scripts.Pathfinding
 
         private List<PathTile> pathTiles = new List<PathTile>();
 
-        public PathfindingAlgorithm(WalkableTilesGrid tileGrid,
-                                    [Inject(Id = ZenjectIDs.PATH_CHECKED_TILES)] ReactiveCollection<PathTile> checkedTiles)
+        public PathfindingAlgorithm(WalkableTilesGrid tileGrid)
         {
             this.tileGrid = tileGrid;
-
-            checkedTiles.ObserveCountChanged()
-                .Subscribe(x =>
-                {
-                    pathTiles.ForEach(x => x.TileUpdated.OnNext(Color.white));
-                    pathTiles.Clear();
-
-                    if (x == 2)
-                    {
-                        UnityEngine.Debug.Log("PATH RENDER");
-                        foreach (var tile in GetPath(checkedTiles.ToList()))
-                        {
-                            tile.TileUpdated.OnNext(Color.blue);
-                            pathTiles.Add(tile);
-                        }
-                    }
-                    else
-                    {
-                        UnityEngine.Debug.Log("PATH NO RENDER");
-                    }
-                });
         }
 
-        public List <PathTile>  GetPath(List<PathTile> checkedTiles)
+        public async UniTask<List<Vector3>> GetPath(PathTile startTile, PathTile endTile)
         {
-            var startTile = checkedTiles[0];
-            var endTile = checkedTiles[1];
-
             var openSet = new Heap<PathTile>(tileGrid.Tiles.Count);
             var closedSet = new HashSet<PathTile>();
 
             openSet.Add(startTile);
 
-            while (openSet.Count > 0)
-            {  
-                PathTile currentTile = openSet.PopFirst();
-                closedSet.Add(currentTile);
+            Stopwatch sw = Stopwatch.StartNew();
 
-                if(currentTile == endTile)
+            var path = await UniTask.RunOnThreadPool(() =>
+            {
+                while (openSet.Count > 0)
                 {
-                    return RetrivePath(startTile, endTile);
-                }
+                    PathTile currentTile = openSet.PopFirst();
+                    closedSet.Add(currentTile);
 
-                foreach(Vector2Int tileGridPos in currentTile.TileInfo.Neighbours)
-                {
-                    var neighbourTile = tileGrid.GetPathTileByGridCoords(tileGridPos);
-                    if (closedSet.Contains(neighbourTile))
-                        continue;
-
-                    int newNeighbourDistance = currentTile.GCost + GetDistance(currentTile, neighbourTile);
-                    if(newNeighbourDistance < neighbourTile.GCost || !openSet.Contains(neighbourTile))
+                    if (currentTile == endTile)
                     {
-                        neighbourTile.SetGCost(newNeighbourDistance);
-                        neighbourTile.SetHCost(GetDistance(neighbourTile, endTile));
-                        neighbourTile.SetParent(currentTile);
+                        sw.Stop();
+                        UnityEngine.Debug.Log("TIME = " + sw.ElapsedMilliseconds);
+                        return RetrivePath(startTile, endTile);
+                    }
 
-                        if(!openSet.Contains(neighbourTile))
-                            openSet.Add(neighbourTile);
+                    foreach (Vector2Int tileGridPos in currentTile.TileInfo.Neighbours)
+                    {
+                        var neighbourTile = tileGrid.GetPathTileByGridCoords(tileGridPos);
+                        if (closedSet.Contains(neighbourTile))
+                            continue;
+
+                        int newNeighbourDistance = currentTile.GCost + GetDistance(currentTile, neighbourTile);
+                        if (newNeighbourDistance < neighbourTile.GCost || !openSet.Contains(neighbourTile))
+                        {
+                            neighbourTile.SetGCost(newNeighbourDistance);
+                            neighbourTile.SetHCost(GetDistance(neighbourTile, endTile));
+                            neighbourTile.SetParent(currentTile);
+
+                            if (!openSet.Contains(neighbourTile))
+                                openSet.Add(neighbourTile);
+                        }
                     }
                 }
-            }
-            return new List<PathTile>();
+
+                return new List<Vector3>();
+            });
+
+            return path;
         }
 
         private int GetDistance(PathTile start, PathTile end)
@@ -94,7 +80,7 @@ namespace Assets.Scripts.Pathfinding
                 return 14 * xDist + 10 * (yDist - xDist);
         }
 
-        private List<PathTile> RetrivePath(PathTile startTile, PathTile endTile)
+        private List<Vector3> RetrivePath(PathTile startTile, PathTile endTile)
         {
             var path = new List<PathTile>();
             var current = endTile;
@@ -105,7 +91,38 @@ namespace Assets.Scripts.Pathfinding
                 path.Add(current);
             }
             path.Reverse();
-            return path;
+            return path.Select(x=>x.TileInfo.Position).ToList();
+        }
+    }
+
+    public class AsyncAwaitTest
+    {
+        public async void Msg()
+        {
+            UnityEngine.Debug.Log("MSG");
+        }
+        public async void Strt()
+        {
+            await UniTask.RunOnThreadPool(() => StartWhile());
+        }
+
+        public async UniTask<bool> StartWhile()
+        {
+            return await LongWhile();
+        }
+
+        public UniTask<bool> LongWhile()
+        {
+            int n = 0;
+            while (true)
+            {
+                n++;
+                if(n == 10000)
+                {
+                    return new UniTask<bool>(true);
+                }
+                UnityEngine.Debug.Log("n = " + n);
+            }          
         }
     }
 }
