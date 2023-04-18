@@ -21,16 +21,13 @@ namespace Assets.Scripts.Pathfinding
         [Inject]
         private IFactory<TileInfo, bool, PathTile> tilesFactory;
 
-        public WalkableTilesGrid(SquareGrid squareGrid) 
+        public WalkableTilesGrid(SquareGrid squareGrid, [Inject(Id = ZenjectIDs.CAVE_CREATED)] Subject<Unit> caveCreated) 
         {
             Tiles = new List<PathTile>();
             tilesPositionsInGrid = new Dictionary<Vector2Int, PathTile>();
 
-            Observable.EveryUpdate().Where(_ => Input.GetKeyDown(KeyCode.Space))
-                .Subscribe(_ =>
-                {
-                    CreateTiles(squareGrid);
-                });
+            caveCreated
+                .Subscribe(_ => CreateTiles(squareGrid));
         }
 
         private void CreateTiles(SquareGrid squareGrid)

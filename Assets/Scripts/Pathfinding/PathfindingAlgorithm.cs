@@ -94,35 +94,4 @@ namespace Assets.Scripts.Pathfinding
             return path.Select(x=>x.TileInfo.Position).ToList();
         }
     }
-
-    public class AsyncAwaitTest
-    {
-        public async void Msg()
-        {
-            UnityEngine.Debug.Log("MSG");
-        }
-        public async void Strt()
-        {
-            await UniTask.RunOnThreadPool(() => StartWhile());
-        }
-
-        public async UniTask<bool> StartWhile()
-        {
-            return await LongWhile();
-        }
-
-        public UniTask<bool> LongWhile()
-        {
-            int n = 0;
-            while (true)
-            {
-                n++;
-                if(n == 10000)
-                {
-                    return new UniTask<bool>(true);
-                }
-                UnityEngine.Debug.Log("n = " + n);
-            }          
-        }
-    }
 }
